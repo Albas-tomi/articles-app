@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -50,13 +51,14 @@ const LoginPage = () => {
         }
       );
       if (res.status === 200) {
-        alert("Login berhasil");
+        toast.success("Login successfully");
         Cookies.set("token", res.data.access, { expires: 4 });
         getDataProfile(res.data.access);
         router.push("/");
         setLoading(false);
       }
     } catch (error) {
+      toast.error("Login failed");
       console.log(error);
       setLoading(false);
     }

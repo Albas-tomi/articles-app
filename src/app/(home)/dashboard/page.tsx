@@ -7,28 +7,12 @@ import useSWR from "swr";
 import { fetcherWithToken } from "@/lib/swr/fetcher";
 import Cookies from "js-cookie";
 import { getStaticArticles } from "@/utils/api";
+import { GetStaticProps } from "next";
 
-const token: any = Cookies.get("token");
-
-// const getDataArticles = async () => {
-//   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/articles`, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//     // menyimpan cache request
-//     cache: "force-cache", // Force revalidation melakukan request untuk memperbarui konten
-//     next: {
-//       revalidate: 750, // Revalidate setiap 750 detik untuk pembaruan konten
-//     },
-//   });
-//   if( !res.ok) {
-//     throw new Error("Gagal mengambil data articles");
-//   }
-//   return res.json();
-// };
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemPerPage, setItemPerPage] = useState(10);
+  const token: any = Cookies.get("token");
 
   // Fetch data articles
   const {
@@ -37,6 +21,11 @@ export default function Home() {
     isLoading,
   } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/api/articles`, {
     fetcher: (url: string) => fetcherWithToken(url, token),
+    revalidateOnFocus: false, // Tidak melakukan revalidasi saat tab mendapatkan fokus
+    revalidateOnReconnect: true, // Melakukan revalidasi saat koneksi internet kembali
+    refreshInterval: 60000, // Revalidasi setiap 60 detik (1 menit)
+    dedupingInterval: 2000, // Mencegah permintaan ganda dalam 2 detik
+    errorRetryCount: 3, // Jumlah percobaan maksimum jika shouldRetryOnError true
   });
 
   // PAGINATION
@@ -72,7 +61,7 @@ export default function Home() {
       <h1 className="md:text-3xl  text-2xl font-bold text-center w-full my-2">
         Articles
       </h1>
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {dataDisplay.map((item: any, index: number) => (
           <ArticleCard item={item} />
         ))}

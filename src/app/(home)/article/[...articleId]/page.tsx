@@ -21,13 +21,32 @@ const DetailArticle = () => {
     isLoading,
   } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/api/articles`, {
     fetcher: (url: string) => fetcherWithToken(url, token),
+    revalidateOnFocus: false, // Tidak melakukan revalidasi saat tab mendapatkan fokus
+    revalidateOnReconnect: true, // Melakukan revalidasi saat koneksi internet kembali
+    refreshInterval: 60000, // Revalidasi setiap 60 detik (1 menit)
+    dedupingInterval: 2000, // Mencegah permintaan ganda dalam 2 detik
+    errorRetryCount: 3, // Jumlah percobaan maksimum jika shouldRetryOnError true
   });
 
   const dataDisplay = articles?.data.filter(
     (article: any) => article.id == articleId
   );
 
-  console.log(dataDisplay);
+  if (error) {
+    return (
+      <div className="text-red-600 text-xl h-full  flex justify-center items-center">
+        Error fetching data
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="text-xl h-full  flex justify-center items-center">
+        <span className="loading text-blue-500 loading-infinity min-w-16"></span>
+      </div>
+    );
+  }
 
   return (
     <>

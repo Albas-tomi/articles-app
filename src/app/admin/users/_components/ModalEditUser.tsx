@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { CgClose } from "react-icons/cg";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 const ModalEditUser = ({
   setShowModal,
   dataUser,
@@ -44,12 +45,12 @@ const ModalEditUser = ({
         }
       );
       if (res.status === 200) {
+        toast.success("Update user successfully");
         setShowModal(false);
         router.refresh();
-        alert("User updated successfully");
       }
     } catch (error) {
-      alert("Error updating user");
+      toast.error("Update user failed");
       console.log(error);
     }
   };

@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import useSWR from "swr";
 import { fetcherWithToken } from "@/lib/swr/fetcher";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const AdminUsers = () => {
   const [showModal, setShowModal] = useState(false);
@@ -22,6 +23,11 @@ const AdminUsers = () => {
     isLoading,
   } = useSWR(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {
     fetcher: (url: string) => fetcherWithToken(url, token),
+    revalidateOnFocus: false, // Tidak melakukan revalidasi saat tab mendapatkan fokus
+    revalidateOnReconnect: true, // Melakukan revalidasi saat koneksi internet kembali
+    refreshInterval: 60000, // Revalidasi setiap 60 detik (1 menit)
+    dedupingInterval: 2000, // Mencegah permintaan ganda dalam 2 detik
+    errorRetryCount: 3, // Jumlah percobaan maksimum jika shouldRetryOnError true
   });
 
   // Delete user
@@ -36,13 +42,12 @@ const AdminUsers = () => {
           },
         }
       );
-      console.log(res);
       if (res.status === 204) {
-        alert("User deleted successfully");
+        toast.success("Delete user successfully");
         router.refresh();
       }
     } catch (error) {
-      alert("Error deleting user");
+      toast.error("Delete user failed");
       console.log(error);
     }
   };
