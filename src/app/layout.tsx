@@ -1,4 +1,6 @@
+import Sidebar from "@/components/AdminSidebar/AdminSidebar";
 import "./globals.css";
+import { AppWrapper } from "@/lib/context";
 
 export default function RootLayout({
   children,
@@ -7,7 +9,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AppWrapper>{children}</AppWrapper>
+      </body>
     </html>
   );
 }

@@ -13,3 +13,18 @@
     --foreground: #ededed;
   }
 }
+
+.scrollBar {
+  /* Mengatur scrollbar untuk Firefox */
+  scrollbar-width: none; /* Mengatur lebar scrollbar menjadi tipis */
+}
+
+.scrollBar::-webkit-scrollbar {
+  width: 0; /* Menyembunyikan scrollbar secara total */
+  height: 0; 
+}
+
+
+
+
+
